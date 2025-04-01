@@ -61,11 +61,11 @@ export function EduPathLogo({ className = "", size = "md", withText = true }: Ed
     lg: "w-10 h-10",
   }
 
-  const textSizeClasses = {
-    sm: "text-lg",
-    md: "text-xl",
-    lg: "text-2xl",
-  }
+  // const textSizeClasses = {
+  //   sm: "text-lg",
+  //   md: "text-xl",
+  //   lg: "text-2xl",
+  // }
 
   return (
     <div className={`inline-flex justify-start items-center gap-3 ${className}`}>
