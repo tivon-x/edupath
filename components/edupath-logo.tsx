@@ -1,5 +1,4 @@
 import { cn } from "@/lib/utils"
-import Link from "next/link"
 
 interface EduPathLogoProps {
   className?: string
@@ -69,13 +68,15 @@ export function EduPathLogo({ className = "", size = "md", withText = true }: Ed
   }
 
   return (
-    <Link href='/dashboard' className={`flex items-center gap-2 ${className}`}>
+    <div className={`inline-flex justify-start items-center gap-3 ${className}`}>
       <div className='relative'>
         <Logo size={size} className={cn(sizeClasses[size], "text-primary")} />
       </div>
       {withText && (
-        <span className={`font-bold ${textSizeClasses[size]} text-primary`}>EduPath</span>
+        <span className={`w-36 justify-start font-semibold text-black text-4xl leading-10`}>
+          EduPath
+        </span>
       )}
-    </Link>
+    </div>
   )
 }

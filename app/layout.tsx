@@ -1,13 +1,25 @@
 import type { Metadata } from "next"
-import { Geist, Geist_Mono } from "next/font/google"
+import { Spline_Sans, Spline_Sans_Mono } from "next/font/google"
 import "./globals.css"
 
-const geistSans = Geist({
+// this font is used for the whole app
+// const geistSans = Geist({
+//   variable: "--font-geist-sans",
+//   subsets: ["latin"],
+// })
+
+// this font is used for code blocks
+// const geistMono = Geist_Mono({
+//   variable: "--font-geist-mono",
+//   subsets: ["latin"],
+// })
+
+const splineSans = Spline_Sans({
   variable: "--font-geist-sans",
   subsets: ["latin"],
 })
 
-const geistMono = Geist_Mono({
+const splineSansMono = Spline_Sans_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
 })
@@ -25,7 +37,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang='zh'>
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>{children}</body>
+      <body className={`${splineSans.variable} ${splineSansMono.variable} antialiased`}>
+        {children}
+      </body>
     </html>
   )
 }
