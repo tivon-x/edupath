@@ -41,10 +41,10 @@ export default function SignIn() {
           >
             <TabsList className='grid w-full h-11 grid-cols-2 rounded-full '>
               <TabsTrigger value='verification' className='rounded-full'>
-                账号密码登录
+                密码登录
               </TabsTrigger>
               <TabsTrigger value='email' className='rounded-full'>
-                邮箱验证码登录
+                验证码登录
               </TabsTrigger>
             </TabsList>
 

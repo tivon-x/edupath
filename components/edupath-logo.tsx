@@ -12,7 +12,7 @@ const Logo: React.FC<EduPathLogoProps> = ({ size = 38, className }) => {
   return (
     <svg
       xmlns='http://www.w3.org/2000/svg'
-      width={size}
+      width={numericSize}
       height={height}
       viewBox='0 0 38 47'
       fill='none'

@@ -1,6 +1,7 @@
 import type { Metadata } from "next"
 import { Spline_Sans, Spline_Sans_Mono } from "next/font/google"
 import "./globals.css"
+import { Toaster } from "@/components/ui/sonner"
 
 // this font is used for the whole app
 // const geistSans = Geist({
@@ -39,6 +40,7 @@ export default function RootLayout({
     <html lang='zh'>
       <body className={`${splineSans.variable} ${splineSansMono.variable} antialiased`}>
         {children}
+        <Toaster />
       </body>
     </html>
   )
