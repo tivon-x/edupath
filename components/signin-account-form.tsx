@@ -6,6 +6,7 @@ import Link from "next/link"
 import { Button } from "./ui/button"
 import { useActionState } from "react"
 import { signInWithPassword, State } from "@/lib/actions/auth"
+import Form from "next/form"
 
 export default function SignInAccountForm() {
   const initialState: State = { message: null, errors: {}, formData: { email: "", password: "" } }
@@ -13,7 +14,7 @@ export default function SignInAccountForm() {
   const [state, formAction, isPending] = useActionState(signInWithPassword, initialState)
 
   return (
-    <form action={formAction} className='space-y-4'>
+    <Form action={formAction} className='space-y-4'>
       <div className='relative'>
         <Smartphone className='absolute left-3 top-3 h-5 w-5 text-gray-400' />
         <Input
@@ -22,7 +23,7 @@ export default function SignInAccountForm() {
           className='pl-10 py-6 placeholder:text-stone-300'
           required
           name='email'
-          value={state?.formData?.email}
+          defaultValue={state?.formData?.email || ""}
         />
       </div>
       {state?.errors?.email && (
@@ -36,7 +37,7 @@ export default function SignInAccountForm() {
           className='pl-10 py-6 placeholder:text-stone-300'
           required
           name='password'
-          value={state?.formData?.password}
+          defaultValue={state?.formData?.password || ""}
         />
       </div>
       {state?.errors?.password && (
@@ -61,6 +62,6 @@ export default function SignInAccountForm() {
       >
         登录
       </Button>
-    </form>
+    </Form>
   )
 }

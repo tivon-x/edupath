@@ -8,6 +8,7 @@ import Link from "next/link"
 import { useActionState, useState } from "react"
 import { generateToken, sendEmailAction, signUp, State } from "@/lib/actions/auth"
 import { toast } from "sonner"
+import Form from "next/form"
 
 export default function SignUpForm() {
   const [email, setEmail] = useState("")
@@ -33,7 +34,7 @@ export default function SignUpForm() {
   const [state, formAction, isPending] = useActionState(signUp, initialState)
 
   return (
-    <form className='space-y-4 mt-4' action={formAction}>
+    <Form className='space-y-4 mt-4' action={formAction}>
       <div className='relative'>
         <Smartphone className='absolute left-3 top-3 h-5 w-5 text-gray-400' />
         <Input
@@ -57,7 +58,7 @@ export default function SignUpForm() {
           className='pl-10 py-6 placeholder:text-stone-300'
           required
           name='password'
-          value={state?.formData?.password || ""}
+          defaultValue={state?.formData?.password || ""}
         />
       </div>
       {state?.errors?.password && (
@@ -70,7 +71,7 @@ export default function SignUpForm() {
           placeholder='确认密码'
           className='pl-10 py-6 placeholder:text-stone-300'
           name='confirm_password'
-          value={state?.formData?.confirm_password || ""}
+          defaultValue={state?.formData?.confirm_password || ""}
           required
         />
       </div>
@@ -84,7 +85,7 @@ export default function SignUpForm() {
           className='col-span-2 py-6 placeholder:text-stone-300'
           required
           name='verificationToken'
-          value={state?.formData?.verificationToken || ""}
+          defaultValue={state?.formData?.verificationToken || ""}
         />
         <Button
           variant='outline'
@@ -124,6 +125,6 @@ export default function SignUpForm() {
           </Link>
         </label>
       </div>
-    </form>
+    </Form>
   )
 }

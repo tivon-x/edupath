@@ -12,6 +12,7 @@ import {
   State,
 } from "@/lib/actions/auth"
 import { useActionState, useState } from "react"
+import Form from "next/form"
 
 export default function SignInEmailForm() {
   const [email, setEmail] = useState("")
@@ -41,7 +42,7 @@ export default function SignInEmailForm() {
   const [state, formAction, isPending] = useActionState(signInWithVerificationToken, initialState)
 
   return (
-    <form className='space-y-4' action={formAction}>
+    <Form className='space-y-4' action={formAction}>
       <div className='relative'>
         <Mail className='absolute left-3 top-3 h-5 w-5 text-gray-400' />
         <Input
@@ -63,7 +64,7 @@ export default function SignInEmailForm() {
           placeholder='请输入验证码'
           className='pl-10 py-6 pr-24 placeholder:text-stone-300'
           name='verificationToken'
-          value={state?.formData?.verificationToken || ""}
+          defaultValue={state?.formData?.verificationToken || ""}
         />
         <div className='absolute right-0 top-0 h-full px-3 flex items-center'>
           <Separator
@@ -88,6 +89,6 @@ export default function SignInEmailForm() {
       >
         登录
       </Button>
-    </form>
+    </Form>
   )
 }
