@@ -1,9 +1,14 @@
 interface EmailTemplateProps {
   userEmail: string
   verificationToken: string
+  description: string
 }
 
-export const EmailTemplate = ({ userEmail, verificationToken }: EmailTemplateProps) => {
+export const EmailTemplate = ({
+  userEmail,
+  verificationToken,
+  description,
+}: EmailTemplateProps) => {
   return (
     <div style={{ fontFamily: "Arial, sans-serif", maxWidth: "600px", margin: "0 auto" }}>
       <div style={{ background: "#f8f8f8", padding: "20px", borderRadius: "5px" }}>
@@ -11,7 +16,7 @@ export const EmailTemplate = ({ userEmail, verificationToken }: EmailTemplatePro
           <span style={{ color: "#4a6ee0" }}>EduPath</span> 邮件验证
         </h2>
         <p>你好 {userEmail},</p>
-        <p>感谢您注册EduPath！请使用以下验证码来验证您的电子邮件地址并完成注册过程。</p>
+        <p>{description}</p>
         <div
           style={{
             background: "#ffffff",

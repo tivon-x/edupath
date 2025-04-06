@@ -68,15 +68,11 @@ export function EduPathLogo({ className = "", size = "md", withText = true }: Ed
   // }
 
   return (
-    <div className={`inline-flex justify-start items-center gap-3 ${className}`}>
+    <div className={cn("inline-flex justify-start items-center gap-3 text-4xl", className)}>
       <div className='relative'>
         <Logo size={size} className={cn(sizeClasses[size], "text-primary")} />
       </div>
-      {withText && (
-        <span className={`w-36 justify-start font-semibold text-black text-4xl leading-10`}>
-          EduPath
-        </span>
-      )}
+      {withText && <span className={`w-36 justify-start font-semibold leading-10`}>EduPath</span>}
     </div>
   )
 }

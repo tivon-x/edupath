@@ -3,25 +3,24 @@
 import { Smartphone, Lock } from "lucide-react"
 import { Input } from "./ui/input"
 import { Button } from "./ui/button"
-import { generateToken, resetPassword, sendEmailAction, State } from "@/lib/actions/auth"
+import { resetPassword, State } from "@/lib/actions/auth"
 import { useActionState, useState } from "react"
 import { toast } from "sonner"
 import Form from "next/form"
+import { authClient } from "@/lib/auth-client"
 
 export default function SignUpForm() {
   const [email, setEmail] = useState("")
   const handleCodeClick = async () => {
-    const verificationToken = await generateToken(email)
-    if (verificationToken === null) {
+    const { data, error } = await authClient.emailOtp.sendVerificationOtp({
+      email: email,
+      type: "forget-password", // or "email-verification", "forget-password"
+    })
+    if (error) {
+      console.error("Error sending verification token:", error)
       toast.error("验证码发送失败，请稍后再试")
-      return
     } else {
-      const res = await sendEmailAction(email, verificationToken)
-      if (res.error) {
-        toast.error("验证码发送失败，请稍后再试")
-        return
-      }
-      toast.success("验证码已发送，请注意查收")
+      toast.success("验证码已发送到您的电子邮件")
     }
   }
   const initialState: State = {

@@ -3,16 +3,25 @@
 import { EduPathLogo } from "@/components/edupath-logo"
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { BookOpen, FileText, Users, HelpCircle, Settings, ChevronRight } from "lucide-react"
+import {
+  BookOpen,
+  FileText,
+  Users,
+  HelpCircle,
+  Settings,
+  ChevronRight,
+  BookOpenText,
+} from "lucide-react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 
 interface SidebarProps {
   userName: string
-  userPhone: string
+  userEmail: string
+  avatarUrl: string
 }
 
-export function Sidebar({ userName, userPhone }: SidebarProps) {
+export function Sidebar({ userName, userEmail, avatarUrl }: SidebarProps) {
   const pathname = usePathname()
 
   const menuItems = [
@@ -36,7 +45,7 @@ export function Sidebar({ userName, userPhone }: SidebarProps) {
       items: [
         {
           name: "My Courses",
-          icon: <BookOpen className='h-5 w-5' />,
+          icon: <BookOpenText className='h-5 w-5' />,
           href: "/my-courses",
         },
         {
@@ -47,7 +56,7 @@ export function Sidebar({ userName, userPhone }: SidebarProps) {
       ],
     },
     {
-      title: "OTHER",
+      title: "其他",
       items: [
         {
           name: "支持",
@@ -64,15 +73,19 @@ export function Sidebar({ userName, userPhone }: SidebarProps) {
   ]
 
   return (
-    <div className='flex flex-col h-full bg-primary-500 text-white rounded-r-3xl w-60'>
+    <div className='mr-12 flex flex-col h-full bg-primary text-white rounded-r-[66px] shadow-[10px_5px_6px_4px_rgba(0,0,0,0.23)] w-60'>
       <div className='p-6'>
-        <EduPathLogo className='text-white' />
+        <Link href={"/dashboard"}>
+          <EduPathLogo className='text-white text-2xl' />
+        </Link>
       </div>
 
       <div className='flex-1 overflow-auto px-4'>
         {menuItems.map((section, i) => (
           <div key={i} className='mb-6'>
-            <h3 className='text-sm font-medium text-white/70 mb-3 px-2'>{section.title}</h3>
+            <h3 className='text-base font-medium text-white mb-3 px-2 self-stretch leading-7'>
+              {section.title}
+            </h3>
             <div className='space-y-1'>
               {section.items.map((item, j) => {
                 const isActive = pathname === item.href
@@ -80,10 +93,8 @@ export function Sidebar({ userName, userPhone }: SidebarProps) {
                   <Link
                     key={j}
                     href={item.href}
-                    className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm ${
-                      isActive
-                        ? "bg-white text-primary-500 font-medium"
-                        : "text-white hover:bg-white/10"
+                    className={`flex items-center gap-3 px-3 py-2 rounded-[50px] leading-7 text-base text-black ${
+                      isActive ? "bg-white text-primary-500 font-medium" : "hover:bg-white/10"
                     }`}
                   >
                     <div className='flex items-center justify-center w-8 h-8'>{item.icon}</div>
@@ -96,16 +107,16 @@ export function Sidebar({ userName, userPhone }: SidebarProps) {
         ))}
       </div>
 
-      <div className='p-4 mt-auto'>
-        <div className='bg-primary-600 rounded-xl p-4'>
+      <div className='mt-auto mb-16'>
+        <div className='bg-violet-400 p-4 rounded-[55px]'>
           <div className='flex items-center gap-3'>
-            <Avatar className='border-2 border-white'>
-              <AvatarImage src='/placeholder-user.jpg' />
+            <Avatar className='w-14 h-14'>
+              <AvatarImage src={avatarUrl} />
               <AvatarFallback>李华</AvatarFallback>
             </Avatar>
             <div className='flex-1 min-w-0'>
               <p className='text-sm font-medium truncate'>{userName}</p>
-              <p className='text-xs text-white/70 truncate'>{userPhone}</p>
+              <p className='text-xs text-white/70 truncate'>{userEmail}</p>
             </div>
             <Button
               variant='ghost'

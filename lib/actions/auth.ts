@@ -2,12 +2,13 @@
 
 import { z } from "zod"
 import db from "../db"
-import { signIn } from "@/auth"
-import { AuthError } from "next-auth"
+import { auth } from "@/auth"
+import { APIError } from "better-auth/api"
 import { redirect } from "next/navigation"
-// import { Resend } from "resend"
-// import { EmailTemplate } from "@/components/email-template"
+import { Resend } from "resend"
+import { EmailTemplate } from "@/components/email-template"
 import { toast } from "sonner"
+import { headers } from "next/headers"
 
 const SignInSchema = z.object({
   email: z.string().email("邮件格式不正确"),
@@ -57,36 +58,34 @@ export async function signInWithPassword(prevState: State, formData: FormData): 
   }
 
   try {
-    await signIn("credentials", {
-      email: validatedFields.data.email,
-      password: validatedFields.data.password,
-      isVerificationToken: false,
+    await auth.api.signInEmail({
+      body: {
+        email: validatedFields.data.email,
+        password: validatedFields.data.password,
+      },
     })
   } catch (error) {
-    if (error instanceof AuthError) {
-      switch (error.type) {
-        case "CredentialsSignin":
-          return {
-            errors: {
-              credentials: [error.message],
-            },
-            message: "Invalid credentials.",
-            formData: {
-              email: formData.get("email") as string,
-              password: formData.get("password") as string,
-            },
-          }
-        default:
-          return {
-            errors: {
-              credentials: ["登录失败，请稍后再试"],
-            },
-            message: "Failed to sign in.",
-            formData: {
-              email: formData.get("email") as string,
-              password: formData.get("password") as string,
-            },
-          }
+    if (error instanceof APIError) {
+      return {
+        errors: {
+          credentials: [error.message],
+        },
+        message: "Invalid credentials.",
+        formData: {
+          email: formData.get("email") as string,
+          password: formData.get("password") as string,
+        },
+      }
+    } else {
+      return {
+        errors: {
+          database: ["登录失败，请稍后再试"],
+        },
+        message: "登录失败，请稍后再试",
+        formData: {
+          email: formData.get("email") as string,
+          password: formData.get("password") as string,
+        },
       }
     }
   }
@@ -112,52 +111,35 @@ export async function signInWithVerificationToken(
       },
     }
   }
-  verifyToken(validatedFields.data.email, validatedFields.data.verificationToken).then((res) => {
-    if (!res) {
-      return {
-        errors: {
-          verificationToken: ["验证码错误或已过期"],
-        },
-        message: "验证码错误或已过期",
-        formData: {
-          email: formData.get("email") as string,
-          verificationToken: formData.get("verificationToken") as string,
-        },
-      }
-    }
-  })
-
   try {
-    await signIn("credentials", {
-      email: validatedFields.data.email,
-      password: validatedFields.data.verificationToken,
-      isVerificationToken: true,
+    await auth.api.signInEmailOTP({
+      body: {
+        email: validatedFields.data.email,
+        otp: validatedFields.data.verificationToken,
+      },
     })
   } catch (error) {
-    if (error instanceof AuthError) {
-      switch (error.type) {
-        case "CredentialsSignin":
-          return {
-            errors: {
-              credentials: [error.message],
-            },
-            message: "Invalid credentials.",
-            formData: {
-              email: formData.get("email") as string,
-              verificationToken: formData.get("verificationToken") as string,
-            },
-          }
-        default:
-          return {
-            errors: {
-              credentials: ["登录失败"],
-            },
-            message: "Failed to sign in.",
-            formData: {
-              email: formData.get("email") as string,
-              verificationToken: formData.get("verificationToken") as string,
-            },
-          }
+    if (error instanceof APIError) {
+      return {
+        errors: {
+          credentials: [error.message],
+        },
+        message: "Invalid credentials.",
+        formData: {
+          email: formData.get("email") as string,
+          password: formData.get("password") as string,
+        },
+      }
+    } else {
+      return {
+        errors: {
+          database: ["登录失败，请稍后再试"],
+        },
+        message: "登录失败，请稍后再试",
+        formData: {
+          email: formData.get("email") as string,
+          password: formData.get("password") as string,
+        },
       }
     }
   }
@@ -179,7 +161,7 @@ const SingUpSchema = z.object({
       message: "密码必须包含至少一个符号",
     }),
   confirm_password: z.string().min(8, "密码至少8位"),
-  verificationToken: z.string().length(6, "验证码必须是6位"),
+  // verificationToken: z.string().length(6, "验证码必须是6位"),
 })
 
 export async function signUp(prevState: State, formData: FormData): Promise<State> {
@@ -187,7 +169,7 @@ export async function signUp(prevState: State, formData: FormData): Promise<Stat
     email: formData.get("email"),
     password: formData.get("password"),
     confirm_password: formData.get("confirm_password"),
-    verificationToken: formData.get("verificationToken"),
+    // verificationToken: formData.get("verificationToken"),
   })
 
   if (!validatedFields.success) {
@@ -198,7 +180,7 @@ export async function signUp(prevState: State, formData: FormData): Promise<Stat
         email: formData.get("email") as string,
         password: formData.get("password") as string,
         confirm_password: formData.get("confirm_password") as string,
-        verificationToken: formData.get("verificationToken") as string,
+        // verificationToken: formData.get("verificationToken") as string,
       },
     }
   }
@@ -218,37 +200,23 @@ export async function signUp(prevState: State, formData: FormData): Promise<Stat
     }
   }
 
-  const { email, password, verificationToken } = validatedFields.data
-
-  verifyToken(email, verificationToken).then((res) => {
-    if (!res) {
-      return {
-        errors: {
-          verificationToken: ["验证码错误或已过期"],
-        },
-        message: "验证码错误或已过期",
-        formData: {
-          email: formData.get("email") as string,
-          password: formData.get("password") as string,
-          confirm_password: formData.get("confirm_password") as string,
-          verificationToken: formData.get("verificationToken") as string,
-        },
-      }
-    }
-  })
+  const { email, password } = validatedFields.data
 
   try {
-    const isSigned = await db.user.findFirst({
-      where: {
-        email,
+    const response = await auth.api.signUpEmail({
+      body: {
+        email: email,
+        password: password,
+        name: email.split("@")[0],
       },
+      asResponse: true,
     })
-    if (isSigned) {
+    if (!response.ok) {
       return {
         errors: {
-          email: ["该邮箱已被注册"],
+          database: ["用户已存在"],
         },
-        message: "该邮箱已被注册",
+        message: "用户已存在",
         formData: {
           email: formData.get("email") as string,
           password: formData.get("password") as string,
@@ -257,19 +225,12 @@ export async function signUp(prevState: State, formData: FormData): Promise<Stat
         },
       }
     }
-    await db.user.create({
-      data: {
-        email,
-        password,
-        name: email.split("@")[0],
-      },
-    })
   } catch (error) {
     return {
       errors: {
-        database: ["注册失败，请稍后再试"],
+        verificationToken: ["系统错误，请稍后再试"],
       },
-      message: "注册失败，请稍后再试",
+      message: "系统错误，请稍后再试",
       formData: {
         email: formData.get("email") as string,
         password: formData.get("password") as string,
@@ -278,7 +239,8 @@ export async function signUp(prevState: State, formData: FormData): Promise<Stat
       },
     }
   }
-  toast.success("注册成功，请登录")
+
+  toast("注册成功，请登录")
   // 2s后跳转到登录页面，以便用户查看提示信息
   setInterval(() => {
     redirect("/sign-in")
@@ -287,53 +249,6 @@ export async function signUp(prevState: State, formData: FormData): Promise<Stat
     errors: null,
     message: "注册成功，请登录",
   }
-}
-
-export async function generateToken(email: string, length = 6) {
-  return "123456" // for test
-
-  // const characters = "0123456789"
-  // let result = ""
-  // for (let i = 0; i < length; i++) {
-  //   result += characters.charAt(Math.floor(Math.random() * characters.length))
-  // }
-  // try {
-  //   await db.verificationToken.create({
-  //     data: {
-  //       identifier: email,
-  //       token: result,
-  //       expires: new Date(Date.now() + 10 * 60 * 1000), // 10 minutes
-  //     },
-  //   })
-  // } catch (error) {
-  //   return null
-  // }
-  // return result
-}
-
-export async function verifyToken(email: string, token: string) {
-  return token === "123456" // for test
-
-  // const verifiedToken = await db.verificationToken.findFirst({
-  //   where: {
-  //     identifier: email,
-  //     token,
-  //     expires: {
-  //       gte: new Date(),
-  //     },
-  //   },
-  // })
-
-  // if (!verifiedToken) {
-  //   return false
-  // }
-
-  // await db.verificationToken.delete({
-  //   where: {
-  //     id: verifiedToken.id,
-  //   },
-  // })
-  // return true
 }
 
 const ResetPasswordSchema = z.object({
@@ -392,13 +307,21 @@ export async function resetPassword(prevState: State, formData: FormData): Promi
 
   const { email, password, verificationToken } = validatedFields.data
 
-  verifyToken(email, verificationToken).then((res) => {
-    if (!res) {
+  try {
+    const response = await auth.api.resetPasswordEmailOTP({
+      body: {
+        email: email,
+        otp: verificationToken,
+        password: password,
+      },
+      asResponse: true,
+    })
+    if (!response.ok) {
       return {
         errors: {
-          verificationToken: ["验证码错误或已过期"],
+          database: ["用户不存在"],
         },
-        message: "验证码错误或已过期",
+        message: "用户不存在",
         formData: {
           email: formData.get("email") as string,
           password: formData.get("password") as string,
@@ -407,17 +330,6 @@ export async function resetPassword(prevState: State, formData: FormData): Promi
         },
       }
     }
-  })
-
-  try {
-    await db.user.update({
-      where: {
-        email,
-      },
-      data: {
-        password,
-      },
-    })
   } catch (error) {
     return {
       errors: {
@@ -443,13 +355,13 @@ export async function resetPassword(prevState: State, formData: FormData): Promi
   }
 }
 
-// const resend = new Resend(process.env.RESEND_API_KEY)
+const resend = new Resend(process.env.RESEND_API_KEY)
 
-export async function sendEmailAction(userEmail: string, verificationToken: string) {
-  return {
-    error: null,
-  } // for test
-
+export async function sendEmailAction(
+  userEmail: string,
+  verificationToken: string,
+  description: string
+) {
   // try {
   //   const { data, error } = await resend.emails.send({
   //     from: "Acme <onboarding@resend.dev>",
@@ -458,13 +370,12 @@ export async function sendEmailAction(userEmail: string, verificationToken: stri
   //     react: EmailTemplate({
   //       userEmail,
   //       verificationToken: verificationToken,
+  //       description: description,
   //     }),
   //   })
-
   //   if (error) {
   //     return { error }
   //   }
-
   //   return { data }
   // } catch (error: any) {
   //   return { error: error.message }

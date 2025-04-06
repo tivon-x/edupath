@@ -5,29 +5,23 @@ import { Input } from "./ui/input"
 import { Separator } from "./ui/separator"
 import { Button } from "./ui/button"
 import { toast } from "sonner"
-import {
-  generateToken,
-  sendEmailAction,
-  signInWithVerificationToken,
-  State,
-} from "@/lib/actions/auth"
+import { signInWithVerificationToken, State } from "@/lib/actions/auth"
 import { useActionState, useState } from "react"
 import Form from "next/form"
+import { authClient } from "@/lib/auth-client"
 
 export default function SignInEmailForm() {
   const [email, setEmail] = useState("")
   const handleTokenClick = async () => {
-    const verificationToken = await generateToken(email)
-    if (verificationToken === null) {
+    const { data, error } = await authClient.emailOtp.sendVerificationOtp({
+      email: email,
+      type: "sign-in", // or "email-verification", "forget-password"
+    })
+    if (error) {
+      console.error("Error sending verification token:", error)
       toast.error("验证码发送失败，请稍后再试")
-      return
     } else {
-      const res = await sendEmailAction(email, verificationToken)
-      if (res.error) {
-        toast.error("验证码发送失败，请稍后再试")
-        return
-      }
-      toast.success("验证码已发送，请注意查收")
+      toast.success("验证码已发送到您的电子邮件")
     }
   }
 

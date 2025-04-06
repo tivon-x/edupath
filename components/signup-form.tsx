@@ -6,26 +6,26 @@ import { Button } from "./ui/button"
 import { Checkbox } from "./ui/checkbox"
 import Link from "next/link"
 import { useActionState, useState } from "react"
-import { generateToken, sendEmailAction, signUp, State } from "@/lib/actions/auth"
-import { toast } from "sonner"
+import { signUp, State } from "@/lib/actions/auth"
+// import { toast } from "sonner"
 import Form from "next/form"
+// import { authClient } from "@/lib/auth-client"
 
 export default function SignUpForm() {
   const [email, setEmail] = useState("")
-  const handleCodeClick = async () => {
-    const verificationToken = await generateToken(email)
-    if (verificationToken === null) {
-      toast.error("验证码发送失败，请稍后再试")
-      return
-    } else {
-      const res = await sendEmailAction(email, verificationToken)
-      if (res.error) {
-        toast.error("验证码发送失败，请稍后再试")
-        return
-      }
-      toast.success("验证码已发送，请注意查收")
-    }
-  }
+  // const handleTokenClick = async () => {
+  //   const { data, error } = await authClient.emailOtp.sendVerificationOtp({
+  //     email: email,
+  //     type: "sign-in", // or "email-verification", "forget-password"
+  //   })
+  //   if (error) {
+  //     console.error("Error sending verification token:", error)
+  //     toast.error("验证码发送失败，请稍后再试")
+  //   } else {
+  //     toast.success("验证码已发送到您的电子邮件")
+  //   }
+  // }
+
   const initialState: State = {
     errors: {},
     message: "",
@@ -78,7 +78,7 @@ export default function SignUpForm() {
       {state?.errors?.confirm_password && (
         <div className='text-red-500 text-sm font-normal'>{state.errors?.confirm_password[0]}</div>
       )}
-      <div className='grid grid-cols-4 gap-20'>
+      {/* <div className='grid grid-cols-4 gap-20'>
         <Input
           type='text'
           placeholder='请输入验证码'
@@ -92,17 +92,17 @@ export default function SignUpForm() {
           className='h-full col-span-2 text-zinc-700 text-base font-normal leading-snug'
           onClick={(e) => {
             e.preventDefault()
-            handleCodeClick()
+            handleTokenClick()
           }}
           type='button'
           disabled={isPending}
         >
           获取验证码
         </Button>
-      </div>
-      {state?.errors?.verificationToken && (
+      </div> */}
+      {/* {state?.errors?.verificationToken && (
         <div className='text-red-500 text-sm font-normal'>{state.errors?.verificationToken[0]}</div>
-      )}
+      )} */}
       {state?.errors?.database && (
         <div className='text-red-500 text-sm font-normal'>{state.errors?.database[0]}</div>
       )}

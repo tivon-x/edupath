@@ -3,18 +3,6 @@ import { Spline_Sans, Spline_Sans_Mono } from "next/font/google"
 import "./globals.css"
 import { Toaster } from "@/components/ui/sonner"
 
-// this font is used for the whole app
-// const geistSans = Geist({
-//   variable: "--font-geist-sans",
-//   subsets: ["latin"],
-// })
-
-// this font is used for code blocks
-// const geistMono = Geist_Mono({
-//   variable: "--font-geist-mono",
-//   subsets: ["latin"],
-// })
-
 const splineSans = Spline_Sans({
   variable: "--font-geist-sans",
   subsets: ["latin"],

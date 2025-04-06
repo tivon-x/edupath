@@ -1,16 +1,19 @@
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { ChevronLeft, ChevronRight, Star, ArrowRight, BookOpen, Plus, Check } from "lucide-react"
+import Image from "next/image"
 
 export default function DashboardPage() {
   return (
     <div className='space-y-8'>
       {/* Academic/Career Planning Banner */}
-      <div className='bg-primary-500 rounded-xl p-8 text-white relative overflow-hidden'>
+      <div className='bg-primary-500 rounded-3xl shadow-[inset_8px_8px_20px_8px_rgba(255,255,255,0.23)] p-12 text-white relative overflow-hidden w-2xl'>
         <div className='max-w-2xl'>
-          <h2 className='text-3xl font-bold mb-4'>学业/职业规划</h2>
-          <p className='text-white/80 mb-6'>有时，选择比努力更重要</p>
-          <Button variant='secondary' className='bg-white text-primary-500 hover:bg-gray-100'>
+          <h2 className='text-3xl mb-4 font-medium leading-10'>学业/职业规划</h2>
+          <Button
+            variant='secondary'
+            className='w-48 h-14 px-5 py-3.5 bg-white text-primary-500 hover:bg-gray-100 rounded-xl text-xl font-semibold tracking-[3.60px]'
+          >
             再次测试
           </Button>
         </div>
@@ -18,7 +21,7 @@ export default function DashboardPage() {
         {/* Illustration on the right */}
         <div className='absolute right-8 bottom-0'>
           {/* This would be an image in a real implementation */}
-          <div className='w-64 h-48 opacity-80'></div>
+          <Image src='/banner-img.png' alt='Illustration' width={320} height={224} />
         </div>
       </div>
 
