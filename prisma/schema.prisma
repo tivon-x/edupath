@@ -14,11 +14,12 @@ datasource db {
 }
 
 model User {
-  id            String    @id
+  id            String     @id
   name          String
   email         String
   emailVerified Boolean
   image         String?
+  gender        EnumGender @default(UNKNOWN)
   createdAt     DateTime
   updatedAt     DateTime
   sessions      Session[]
@@ -26,6 +27,12 @@ model User {
 
   @@unique([email])
   @@map("user")
+}
+
+enum EnumGender {
+  MALE
+  FEMALE
+  UNKNOWN
 }
 
 model Session {

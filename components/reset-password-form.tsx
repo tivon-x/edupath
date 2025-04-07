@@ -3,7 +3,7 @@
 import { Smartphone, Lock } from "lucide-react"
 import { Input } from "./ui/input"
 import { Button } from "./ui/button"
-import { resetPassword, State } from "@/lib/actions/auth"
+import { resetPassword, AuthState } from "@/lib/actions/auth"
 import { useActionState, useState } from "react"
 import { toast } from "sonner"
 import Form from "next/form"
@@ -23,7 +23,7 @@ export default function SignUpForm() {
       toast.success("验证码已发送到您的电子邮件")
     }
   }
-  const initialState: State = {
+  const initialState: AuthState = {
     errors: {},
     message: "",
     formData: {},

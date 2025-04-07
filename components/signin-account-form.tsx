@@ -5,11 +5,15 @@ import { Input } from "./ui/input"
 import Link from "next/link"
 import { Button } from "./ui/button"
 import { useActionState } from "react"
-import { signInWithPassword, State } from "@/lib/actions/auth"
+import { signInWithPassword, AuthState } from "@/lib/actions/auth"
 import Form from "next/form"
 
 export default function SignInAccountForm() {
-  const initialState: State = { message: null, errors: {}, formData: { email: "", password: "" } }
+  const initialState: AuthState = {
+    message: null,
+    errors: {},
+    formData: { email: "", password: "" },
+  }
 
   const [state, formAction, isPending] = useActionState(signInWithPassword, initialState)
 
@@ -60,7 +64,7 @@ export default function SignInAccountForm() {
         type='submit'
         disabled={isPending}
       >
-        登录
+        {isPending ? "登录中..." : "登录"}
       </Button>
     </Form>
   )

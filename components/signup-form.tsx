@@ -6,7 +6,7 @@ import { Button } from "./ui/button"
 import { Checkbox } from "./ui/checkbox"
 import Link from "next/link"
 import { useActionState, useState } from "react"
-import { signUp, State } from "@/lib/actions/auth"
+import { signUp, AuthState } from "@/lib/actions/auth"
 // import { toast } from "sonner"
 import Form from "next/form"
 // import { authClient } from "@/lib/auth-client"
@@ -26,7 +26,7 @@ export default function SignUpForm() {
   //   }
   // }
 
-  const initialState: State = {
+  const initialState: AuthState = {
     errors: {},
     message: "",
     formData: {},
@@ -111,7 +111,7 @@ export default function SignUpForm() {
         type='submit'
         disabled={isPending}
       >
-        注册
+        {isPending ? "注册中..." : "注册"}
       </Button>
       <div className='flex justify-center items-center space-x-4'>
         <Checkbox id='terms' checked required value='term' name='terms' />

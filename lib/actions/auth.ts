@@ -7,8 +7,13 @@ import { APIError } from "better-auth/api"
 import { redirect } from "next/navigation"
 import { Resend } from "resend"
 import { EmailTemplate } from "@/components/email-template"
-import { toast } from "sonner"
 import { headers } from "next/headers"
+import { revalidatePath } from "next/cache"
+
+type BaseState = {
+  errors?: Error | null
+  message?: string | null
+}
 
 const SignInSchema = z.object({
   email: z.string().email("邮件格式不正确"),
@@ -29,9 +34,7 @@ type Error = {
   database?: string[]
 }
 
-export type State = {
-  errors?: Error | null
-  message?: string | null
+export type AuthState = BaseState & {
   formData?: {
     email?: string
     password?: string
@@ -40,7 +43,10 @@ export type State = {
   }
 }
 
-export async function signInWithPassword(prevState: State, formData: FormData): Promise<State> {
+export async function signInWithPassword(
+  prevState: AuthState,
+  formData: FormData
+): Promise<AuthState> {
   const validatedFields = SignInSchemaWithPassword.safeParse({
     email: formData.get("email"),
     password: formData.get("password"),
@@ -68,7 +74,7 @@ export async function signInWithPassword(prevState: State, formData: FormData): 
     if (error instanceof APIError) {
       return {
         errors: {
-          credentials: [error.message],
+          credentials: ["邮箱或密码错误"],
         },
         message: "Invalid credentials.",
         formData: {
@@ -93,9 +99,9 @@ export async function signInWithPassword(prevState: State, formData: FormData): 
 }
 
 export async function signInWithVerificationToken(
-  prevState: State,
+  prevState: AuthState,
   formData: FormData
-): Promise<State> {
+): Promise<AuthState> {
   const validatedFields = SignInSchema.safeParse({
     email: formData.get("email"),
     verificationToken: formData.get("verificationToken"),
@@ -122,7 +128,7 @@ export async function signInWithVerificationToken(
     if (error instanceof APIError) {
       return {
         errors: {
-          credentials: [error.message],
+          credentials: ["邮箱或验证码错误"],
         },
         message: "Invalid credentials.",
         formData: {
@@ -164,7 +170,7 @@ const SingUpSchema = z.object({
   // verificationToken: z.string().length(6, "验证码必须是6位"),
 })
 
-export async function signUp(prevState: State, formData: FormData): Promise<State> {
+export async function signUp(prevState: AuthState, formData: FormData): Promise<AuthState> {
   const validatedFields = SingUpSchema.safeParse({
     email: formData.get("email"),
     password: formData.get("password"),
@@ -239,16 +245,7 @@ export async function signUp(prevState: State, formData: FormData): Promise<Stat
       },
     }
   }
-
-  toast("注册成功，请登录")
-  // 2s后跳转到登录页面，以便用户查看提示信息
-  setInterval(() => {
-    redirect("/sign-in")
-  }, 2000)
-  return {
-    errors: null,
-    message: "注册成功，请登录",
-  }
+  redirect("/sign-in")
 }
 
 const ResetPasswordSchema = z.object({
@@ -269,7 +266,7 @@ const ResetPasswordSchema = z.object({
   verificationToken: z.string().length(6, "验证码必须是6位"),
 })
 
-export async function resetPassword(prevState: State, formData: FormData): Promise<State> {
+export async function resetPassword(prevState: AuthState, formData: FormData): Promise<AuthState> {
   const validatedFields = ResetPasswordSchema.safeParse({
     email: formData.get("email"),
     password: formData.get("password"),
@@ -344,15 +341,7 @@ export async function resetPassword(prevState: State, formData: FormData): Promi
       },
     }
   }
-  toast.success("重置密码成功，请登录")
-  // 2s后跳转到登录页面，以便用户查看提示信息
-  setInterval(() => {
-    redirect("/sign-in")
-  }, 2000)
-  return {
-    errors: null,
-    message: "重置密码成功，请登录",
-  }
+  redirect("/sign-in")
 }
 
 const resend = new Resend(process.env.RESEND_API_KEY)
@@ -380,4 +369,115 @@ export async function sendEmailAction(
   // } catch (error: any) {
   //   return { error: error.message }
   // }
+}
+
+export type UserInfoState = {
+  errors?: {
+    userName?: string[]
+    gender?: string[]
+    avatarUrl?: string[]
+    database?: string[]
+    newPassword?: string[]
+  }
+  message?: string | null
+  formData?: {
+    userName: string
+    avatarUrl: string
+    gender: string
+  }
+}
+
+const UserInfoSchema = z.object({
+  userName: z.string().min(1, "姓名不能为空"),
+  avatarUrl: z.string().url("头像链接格式不正确"),
+  gender: z.enum(["MALE", "FEMALE", "UNKNOWN"], {
+    errorMap: () => ({ message: "请选择正确的性别" }),
+  }),
+  newPassword: z
+    .string()
+    .min(8, "密码至少8位")
+    .regex(/[a-zA-Z]/, {
+      message: "密码必须包含至少一个字母",
+    })
+    .regex(/\d/, {
+      message: "密码必须包含至少一个数字",
+    })
+    .regex(/[@$!%*?&]/, {
+      message: "密码必须包含至少一个符号",
+    })
+    .optional(),
+})
+
+export async function updateUserInfoByEmail(
+  userEmail: string,
+  prevState: UserInfoState,
+  formData: FormData
+): Promise<UserInfoState> {
+  const userInfo = {
+    userName: formData.get("userName") as string,
+    avatarUrl: formData.get("avatarUrl") as string,
+    gender: formData.get("gender") as string,
+  }
+
+  const validatedFields = UserInfoSchema.safeParse({
+    ...userInfo,
+    newPassword: formData.get("newPassword") || undefined,
+  })
+  if (!validatedFields.success) {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+      message: "",
+      formData: userInfo,
+    }
+  }
+
+  const { userName, avatarUrl, gender, newPassword } = validatedFields.data
+
+  try {
+    const user = await db.user.update({
+      where: { email: userEmail },
+      data: {
+        name: userName,
+        image: avatarUrl,
+        gender: gender,
+      },
+    })
+    if (newPassword) {
+      try {
+        const ctx = await auth.$context
+        const hashedPassword = await ctx.password.hash(newPassword)
+        await ctx.internalAdapter.updatePassword(user.id, hashedPassword)
+      } catch (error: any) {
+        console.error("Error updating password:", error)
+        return {
+          errors: {
+            database: [error.message],
+          },
+          message: "更新密码失败",
+          formData: userInfo,
+        }
+      }
+    }
+  } catch (error) {
+    return {
+      errors: {
+        database: ["更新用户信息失败"],
+      },
+      message: "更新用户信息失败",
+      formData: userInfo,
+    }
+  }
+  revalidatePath("/dashboard")
+  if (newPassword) {
+    return {
+      errors: {},
+      message: "password_success",
+      formData: userInfo,
+    }
+  }
+  return {
+    errors: {},
+    message: "更新用户信息成功",
+    formData: userInfo,
+  }
 }

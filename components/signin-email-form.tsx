@@ -5,7 +5,7 @@ import { Input } from "./ui/input"
 import { Separator } from "./ui/separator"
 import { Button } from "./ui/button"
 import { toast } from "sonner"
-import { signInWithVerificationToken, State } from "@/lib/actions/auth"
+import { signInWithVerificationToken, AuthState } from "@/lib/actions/auth"
 import { useActionState, useState } from "react"
 import Form from "next/form"
 import { authClient } from "@/lib/auth-client"
@@ -25,7 +25,7 @@ export default function SignInEmailForm() {
     }
   }
 
-  const initialState: State = {
+  const initialState: AuthState = {
     errors: {},
     message: null,
     formData: {
@@ -81,7 +81,7 @@ export default function SignInEmailForm() {
         type='submit'
         disabled={isPending}
       >
-        登录
+        {isPending ? "登录中..." : "登录"}
       </Button>
     </Form>
   )
