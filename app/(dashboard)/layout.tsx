@@ -46,7 +46,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
             </Button>
           </div>
         </header>
-        <main className='flex-1 overflow-auto p-6'>{children}</main>
+        <main className='flex-1 overflow-auto py-6 pl-6 pr-18'>{children}</main>
       </div>
     </div>
   )

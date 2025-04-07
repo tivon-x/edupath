@@ -13,7 +13,7 @@ export default function Scheduler({ schedulerItems }: { schedulerItems: Schedult
   return (
     <>
       {/* Calendar */}
-      <Card className='py-0 px-0'>
+      <Card className='py-0 px-0 rounded-3xl'>
         <Calendar
           locale={zhCN}
           mode='single'
@@ -23,7 +23,7 @@ export default function Scheduler({ schedulerItems }: { schedulerItems: Schedult
         />
       </Card>
       {/* Schedule */}
-      <Card className='gap-0'>
+      <Card className='gap-0 rounded-3xl'>
         <CardHeader className='flex items-center justify-between'>
           <div className='text-base font-semibold leading-relaxed'>我的日程表</div>
           <Button className='h-6 w-6 flex items-center justify-center rounded-full bg-primary text-white'>

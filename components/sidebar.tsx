@@ -61,7 +61,7 @@ export function Sidebar({ userName, userEmail, avatarUrl, gender }: SidebarProps
         {
           name: "简历",
           icon: <FileText className='h-5 w-5' />,
-          href: "/resume-optimization",
+          href: "/resume",
         },
       ],
     },
@@ -118,7 +118,7 @@ export function Sidebar({ userName, userEmail, avatarUrl, gender }: SidebarProps
                   <Link
                     key={j}
                     href={item.href}
-                    className={`flex items-center gap-1 px-3 py-2 rounded-[50px] leading-7 text-base text-black ${
+                    className={`flex items-center gap-2 px-3 py-2 rounded-[50px] leading-7 text-base text-black ${
                       isActive
                         ? "bg-white text-primary-500 shadow-[15px_15px_6px_0px_rgba(0,0,0,0.25)]"
                         : "hover:bg-white/10"
@@ -147,7 +147,7 @@ export function Sidebar({ userName, userEmail, avatarUrl, gender }: SidebarProps
             </div>
             <Dialog>
               <DropdownMenu>
-                <DropdownMenuTrigger className='hover:bg-primary-700 rounded-full outline-0 cursor-pointer h-8 w-7.5'>
+                <DropdownMenuTrigger className='hover:bg-primary-700 rounded-full outline-0 cursor-pointer h-10 w-10 flex items-center justify-center'>
                   <ArrowRight className='w-7 h-7' />
                 </DropdownMenuTrigger>
                 <DropdownMenuContent

@@ -1,3 +1,4 @@
+import HistoryCard from "@/components/history-card"
 import Scheduler from "@/components/scheduler"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -152,44 +153,20 @@ export default function DashboardPage() {
               </div>
               <div className='space-y-4'>
                 {plans.map((plan, index) => (
-                  <Card key={index}>
-                    <CardContent className=''>
-                      <div className='flex items-center gap-4'>
-                        <div className='w-10 h-10 rounded-full bg-primary-100 flex items-center justify-center'>
-                          {plan.type === "学业规划" ? (
-                            <BookOpen className='w-5 h-5 text-primary-500' />
-                          ) : (
-                            <Briefcase className='w-5 h-5 text-primary-500' />
-                          )}
-                        </div>
-                        <div className='space-y-1'>
-                          <div className='flex items-center justify-between gap-2'>
-                            <p className='font-medium text-base leading-loose'>{plan.type}</p>
-                            <span className='text-xs bg-primary-500 text-white px-2 py-0.5 rounded-full'>
-                              {plan.date}
-                            </span>
-                          </div>
-
-                          <div className='flex items-center gap-2'>
-                            <div className='flex items-center gap-1 text-xs text-gray-500'>
-                              <span className='w-2 h-2 rounded-full bg-gray-300'></span>
-                              {plan.status[0]}
-                            </div>
-                            <div className='flex items-center gap-1 text-xs text-gray-500'>
-                              <span className='w-2 h-2 rounded-full bg-gray-300'></span>
-                              {plan.status[1]}
-                            </div>
-                          </div>
-                        </div>
-                        <Link
-                          href={plan.link}
-                          className='h-8.5 w-8.5 ml-auto rounded-full bg-primary items-center justify-center flex hover:bg-primary-600 transition duration-200'
-                        >
-                          <ArrowRight className='h-6 w-6 text-white ' />
-                        </Link>
-                      </div>
-                    </CardContent>
-                  </Card>
+                  <HistoryCard
+                    key={index}
+                    type={plan.type}
+                    status={plan.status}
+                    link={plan.link}
+                    date={plan.date}
+                    leftIcon={
+                      plan.type === "学业规划" ? (
+                        <BookOpen className='w-5 h-5 text-primary-500' />
+                      ) : (
+                        <Briefcase className='w-5 h-5 text-primary-500' />
+                      )
+                    }
+                  />
                 ))}
               </div>
             </div>
@@ -197,7 +174,7 @@ export default function DashboardPage() {
         </div>
       </div>
       {/* Right Column - Calendar and Schedule */}
-      <div className='flex-1 space-y-8 mt-8 md:mt-0'>
+      <div className='flex-1 space-y-4 mt-8 md:mt-0'>
         <Scheduler schedulerItems={schedulerItems} />
       </div>
     </div>
