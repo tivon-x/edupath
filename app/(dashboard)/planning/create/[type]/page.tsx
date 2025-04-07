@@ -1,9 +1,9 @@
 import ReturnButton from "@/components/return-button"
-import { ArrowRight, ChevronsLeft } from "lucide-react"
+import { ArrowRight } from "lucide-react"
 import Link from "next/link"
 
-export default function BasicInfoPage({ params }: { params: { type: string } }) {
-  const { type } = params
+export default async function BasicInfoPage({ params }: { params: Promise<{ type: string }> }) {
+  const { type } = await params
 
   const planningItems: {
     [key: string]: string[]

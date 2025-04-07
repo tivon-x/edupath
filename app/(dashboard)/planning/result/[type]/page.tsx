@@ -9,8 +9,12 @@ import {
 } from "@/components/ui/dropdown-menu"
 import ReturnButton from "@/components/return-button"
 
-export default function AbilityAnalysisPage({ params }: { params: { type: string } }) {
-  const { type } = params
+export default async function AbilityAnalysisPage({
+  params,
+}: {
+  params: Promise<{ type: string }>
+}) {
+  const { type } = await params
   return (
     <>
       <div className='grid grid-cols-1 md:grid-cols-2 gap-8'>
