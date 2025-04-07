@@ -11,7 +11,7 @@ import { headers } from "next/headers"
 import { revalidatePath } from "next/cache"
 
 type BaseState = {
-  errors?: Error | null
+  errors?: BaseError | null
   message?: string | null
 }
 
@@ -25,7 +25,7 @@ const SignInSchemaWithPassword = SignInSchema.omit({
   verificationToken: true,
 })
 
-type Error = {
+type BaseError = {
   email?: string[]
   password?: string[]
   verificationToken?: string[]
@@ -447,11 +447,11 @@ export async function updateUserInfoByEmail(
         const ctx = await auth.$context
         const hashedPassword = await ctx.password.hash(newPassword)
         await ctx.internalAdapter.updatePassword(user.id, hashedPassword)
-      } catch (error: any) {
+      } catch (error) {
         console.error("Error updating password:", error)
         return {
           errors: {
-            database: [error.message],
+            database: [(error as Error).message],
           },
           message: "更新密码失败",
           formData: userInfo,
