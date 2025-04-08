@@ -45,10 +45,6 @@ export function Sidebar({ userName, userEmail, avatarUrl, gender }: SidebarProps
       },
     })
   }
-
-  // const { data: session, error } = await authClient.getSession()
-  // const user = session?.user
-
   const menuItems = [
     {
       title: "学途工具",

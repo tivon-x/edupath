@@ -28,13 +28,13 @@ export default function DashboardPage() {
       type: "学业规划",
       date: "2025-03-17",
       status: ["已保存", "已编辑"],
-      link: "/career-planning/academic",
+      link: "/planning/academic",
     },
     {
       type: "职业规划",
       date: "2025-03-17",
       status: ["已保存", "已编辑"],
-      link: "/career-planning/career",
+      link: "/planning/career",
     },
   ]
 
