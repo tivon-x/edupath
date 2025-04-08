@@ -3,7 +3,7 @@ import Scheduler from "@/components/scheduler"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { SchedulterItem } from "@/lib/data"
-import { Star, ArrowRight, BookOpen, User, Briefcase } from "lucide-react"
+import { Star, BookOpen, User, Briefcase } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
 
@@ -13,13 +13,13 @@ export default function DashboardPage() {
       description: "埋头猛冲的学术达人",
       date: "2025-03-17",
       score: 89,
-      link: "/ability-profile/academic",
+      link: "/planning/academic",
     },
     {
       description: "技能超强的就业人才",
       date: "2025-02-17",
       score: 90,
-      link: "/ability-profile/career",
+      link: "/planning/career",
     },
   ]
 
