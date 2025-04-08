@@ -28,7 +28,7 @@ export default function RootLayout({
     <html lang='zh'>
       <body className={`${splineSans.variable} ${splineSansMono.variable} antialiased`}>
         {children}
-        <Toaster className='pointer-events-auto z-[999]' />
+        <Toaster />
       </body>
     </html>
   )
