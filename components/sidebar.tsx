@@ -25,6 +25,7 @@ import { authClient } from "@/lib/auth-client"
 import { Dialog, DialogContent } from "./ui/dialog"
 import { DialogTrigger } from "@radix-ui/react-dialog"
 import { ProfileEditor } from "./profile-editor"
+import { toast } from "sonner"
 
 interface SidebarProps {
   userName: string
@@ -41,6 +42,10 @@ export function Sidebar({ userName, userEmail, avatarUrl, gender }: SidebarProps
       fetchOptions: {
         onSuccess: () => {
           redirect("/sign-in")
+        },
+        onError: (error) => {
+          toast.error("退出登录失败，请稍后再试")
+          console.error("Error signing out:", error)
         },
       },
     })
