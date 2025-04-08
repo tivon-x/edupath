@@ -67,12 +67,12 @@ export function Sidebar({ userName, userEmail, avatarUrl, gender }: SidebarProps
         {
           name: "My Courses",
           icon: <BookOpenText className='h-5 w-5' />,
-          href: "/",
+          href: "/my-courses",
         },
         {
           name: "Discover",
           icon: <Users className='h-5 w-5' />,
-          href: "/",
+          href: "/discover",
         },
       ],
     },
@@ -82,12 +82,12 @@ export function Sidebar({ userName, userEmail, avatarUrl, gender }: SidebarProps
         {
           name: "支持",
           icon: <HelpCircle className='h-5 w-5' />,
-          href: "/",
+          href: "/support",
         },
         {
           name: "设定",
           icon: <Settings className='h-5 w-5' />,
-          href: "/",
+          href: "/settings",
         },
       ],
     },
