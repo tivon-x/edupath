@@ -245,7 +245,7 @@ export async function signUp(prevState: AuthState, formData: FormData): Promise<
       },
     }
   }
-  redirect("/sign-in")
+  redirect(`/sign-in?${new URLSearchParams({ msg: "注册成功，请登录" })}`)
 }
 
 const ResetPasswordSchema = z.object({
@@ -341,7 +341,7 @@ export async function resetPassword(prevState: AuthState, formData: FormData): P
       },
     }
   }
-  redirect("/sign-in")
+  redirect(`/sign-in?${new URLSearchParams({ msg: "重置密码成功，请登录" })}`)
 }
 
 const resend = new Resend(process.env.RESEND_API_KEY)

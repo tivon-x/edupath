@@ -27,8 +27,8 @@ export default function RootLayout({
   return (
     <html lang='zh'>
       <body className={`${splineSans.variable} ${splineSansMono.variable} antialiased`}>
-        {children}
         <Toaster />
+        {children}
       </body>
     </html>
   )

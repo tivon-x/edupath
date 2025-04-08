@@ -3,15 +3,25 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import QQLogo from "@/components/qq-logo"
 import WechatLogo from "@/components/wechat-logo"
 import Link from "next/link"
+import dynamic from "next/dynamic"
 import SignInAccountForm from "@/components/signin-account-form"
 import SignInEmailForm from "@/components/signin-email-form"
 import SignFormHeader from "@/components/sign-form-header"
 
-export default function SignIn() {
+// Importing the component using 'next/dynamic' so that its only be rendered on the client side, not server side.
+const ClientToast = dynamic(() => import("@/components/clientToast"))
+
+export default async function SignIn({
+  searchParams,
+}: {
+  searchParams: Promise<{ msg?: string }>
+}) {
+  const message = (await searchParams).msg || ""
+
   return (
     <>
       <SignFormHeader text='请快登录你的账号吧~' />
-
+      <ClientToast message={message} type='error' />
       <div className='mt-8'>
         <div className='space-y-4'>
           {/* Social login buttons */}
